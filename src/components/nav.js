@@ -7,7 +7,7 @@ const Nav = props => {
 	};
 
 	return (
-		<nav className="teal" style={navStyle}>
+		<nav className="teal lighten-2" style={navStyle}>
 			<div className="nav-wrapper">
 				<Link to="/" className="brand-logo">
 					Chatty App
