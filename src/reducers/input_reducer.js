@@ -11,6 +11,11 @@ export default (state = DEFAULT_STATE, action) => {
 				...state,
 				[action.payload.name]: action.payload.value //have to set in brackets since it has a variable;
 			};
+		case types.CLEAR_INPUT:
+			return {
+				...state,
+				[action.payload]: ""
+			};
 		default:
 			return state;
 	}
