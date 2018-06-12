@@ -6,14 +6,20 @@ import { updateChat } from "../actions";
 
 class Chat extends Component {
 	componentDidMount() {
-		db.ref("/chat-log").on("value", snapshot => {
+		const { id } = this.props.match.params;
+
+		db.ref(`/chat-rooms/${id}`).on("value", snapshot => {
 			// console.log("Chat Data:", snapshot.val());
 			this.props.updateChat(snapshot.val());
 		});
 	}
 
 	render() {
-		const { chatLog } = this.props;
+		const {
+			chatLog,
+			roomName,
+			match: { params }
+		} = this.props;
 
 		const chatElements = Object.keys(chatLog).map((key, index) => {
 			const { name, message } = chatLog[key];
@@ -28,9 +34,9 @@ class Chat extends Component {
 
 		return (
 			<div>
-				<h1 className="center">Chat Room</h1>
+				<h1 className="center">{roomName || "Chat Room"}</h1>
 				<ul className="collection">{chatElements}</ul>
-				<MessageInput />
+				<MessageInput roomId={params.id} />
 			</div>
 		);
 	}
@@ -38,7 +44,8 @@ class Chat extends Component {
 
 function mapStateToProps(state) {
 	return {
-		chatLog: state.chat.log
+		chatLog: state.chat.log,
+		roomName: state.chat.name
 	};
 }
 
