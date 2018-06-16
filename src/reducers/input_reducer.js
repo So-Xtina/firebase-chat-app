@@ -21,6 +21,11 @@ export default (state = DEFAULT_STATE, action) => {
 				...state,
 				[action.payload]: ""
 			};
+		case types.CLEAR_MANY_INPUTS:
+			return {
+				...state,
+				...action.payload
+			};
 		default:
 			return state;
 	}

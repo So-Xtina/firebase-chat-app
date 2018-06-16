@@ -4,13 +4,52 @@ import { db, auth } from "../firebase";
 export function createAccount(userData) {
 	return async dispatch => {
 		try {
-			const newUser = auth.createUserWithEmailAndPassword(userData.email, userData.password);
+			await auth.createUserWithEmailAndPassword(userData.email, userData.password);
 
-			//TODO add username to user, update redux state with user info
+			const user = auth.currentUser;
 
-			console.log("New User: ", newUser);
+			await user.updateProfile({
+				displayName: userData.username
+			});
+
+			console.log("Profile Updated");
 		} catch (err) {
 			console.log("Create Account Error:", err.message);
+		}
+	};
+}
+
+export function signInAction(user) {
+	return {
+		type: types.SIGN_IN,
+		email: user.email,
+		username: user.displayName
+	};
+}
+
+export function signOutAction() {
+	return {
+		type: types.SIGN_OUT
+	};
+}
+
+export function signInUser({ email, password }) {
+	return async dispatch => {
+		try {
+			await auth.signInWithEmailAndPassword(email, password);
+		} catch (err) {
+			console.log("Error Signing In: ", err.message);
+			//TODO dispatch error for UI/UX
+		}
+	};
+}
+
+export function signOutUser() {
+	return async dispatch => {
+		try {
+			await auth.signOut();
+		} catch (err) {
+			console.log("Error Signing user out: ", err.message);
 		}
 	};
 }
@@ -29,11 +68,24 @@ export function updateInput(name, value) {
 	};
 }
 
-export function sendMessageToDatabase(id, message) {
+export function sendMessageToDatabase(id, name, message) {
 	db.ref(`/chat-logs/${id}`).push({
-		name: "Stu",
+		name,
 		message
 	});
+}
+
+export function clearManyInputs(names) {
+	const toClear = {};
+
+	names.map(name => {
+		toClear[name] = "";
+	});
+
+	return {
+		type: types.CLEAR_MANY_INPUTS,
+		payload: toClear
+	};
 }
 
 export function clearInput(name) {
