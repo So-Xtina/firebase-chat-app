@@ -1,12 +1,16 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { updateInput, createAccount } from "../actions";
+import { updateInput, createAccount, clearManyInputs } from "../actions";
 
 class SignUp extends Component {
 	constructor(props) {
 		super(props);
 
 		this.handleInputChange = this.handleInputChange.bind(this);
+	}
+
+	componentWillUnmount() {
+		this.props.clearManyInputs(["email", "username", "password", "confirmPassword"]);
 	}
 
 	handleSignUp(event) {
@@ -76,7 +80,7 @@ class SignUp extends Component {
 						/>
 					</div>
 					<div className="row right-align">
-						<button className="btn grey darken-2">Sign Up</button>
+						<button className="btn grey darken-1">Sign Up</button>
 					</div>
 				</form>
 			</div>
@@ -99,5 +103,5 @@ function mapStateToProps(state) {
 
 export default connect(
 	mapStateToProps,
-	{ updateInput, createAccount }
+	{ updateInput, createAccount, clearManyInputs }
 )(SignUp);
